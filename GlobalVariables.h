@@ -1,0 +1,24 @@
+//Global variables initialization
+int Ncook = 2;
+int Noven = 15;
+int Npacker = 2;
+int Ndeliverer = 10;
+int Torderlow = 1;
+int Torderhigh = 3;
+int Norderlow = 1;
+int Norderhigh = 5;
+double Pplain = 0.6;
+int Tpaymentlow = 1;
+int Tpaymenthigh = 3;
+double Pfail = 0.1;
+int Cplain = 10;
+int Cspecial = 12;
+int Tprep = 1;
+int Tbake = 10;
+int Tpack = 1;
+int Tdellow = 5;
+int Tdelhigh = 15;
+pthread_mutex_t lock;
+pthread_cond_t  cond;
+int Ncust;
+unsigned int random1;
