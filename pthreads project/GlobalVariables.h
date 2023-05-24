@@ -31,4 +31,5 @@ int unsuccesfull_orders=0;
 void cancelation_id(int id);
 void sales(int pizzas[],int pizza);
 unsigned int* random_number_seed(void);
+void preparation(int pizzas,int id);
 void* order(void* x);
