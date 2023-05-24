@@ -31,6 +31,33 @@ unsigned int* random_number_seed(void) {
     return &random1;
 }
 
+void preparation(int pizzas,int id){
+
+    //Condition to ensure that there is a cook to start preparing the order
+    while(Ncook<1){
+        printf("Not enough cooks..please wait \n");
+        pthread_cond_wait(&cond, &lock);
+    }
+    pthread_mutex_unlock(&lock);
+    
+    //There is a cook at least
+    Ncook --;
+    printf("Preparation started for the order\n");
+
+    //Preparation for each pizza
+    for(int i=0;i<pizzas;i++){
+        sleep(Tprep);//Tprep*60 (because Tprep is in seconds)
+        printf("number %d pizza prepared for order %d \n",i+1,id);
+    }
+    pthread_mutex_lock(&lock);
+    
+    //End of an order's preparation so it is ready for baking
+    Ncook++;
+    pthread_cond_signal(&cond);
+    pthread_mutex_unlock(&lock);
+
+}
+
 //Checks for order failure or submission
 void* order(void* x) {
 
@@ -74,7 +101,7 @@ void* order(void* x) {
     }
 
     pthread_mutex_unlock(&lock);
-    free(pizzas);
+    preparation(random_number_pizza,id_nhma);
 
     return 0;
 }
