@@ -2,6 +2,7 @@
 #include <pthread.h>
 #include "p3210218-p3210272-pizzeria.h"
 #include "Functions.h"
+#include<unistd.h>
 #include <stdlib.h>
 #include <time.h>
 #include <stdbool.h>

@@ -1,4 +1,4 @@
-//Global variables initialization
+//Global variables and functions initialization
 int Ncook = 2;
 int Noven = 15;
 int Npacker = 2;
@@ -31,5 +31,7 @@ int unsuccesfull_orders=0;
 void cancelation_id(int id);
 void sales(int pizzas[],int pizza);
 unsigned int* random_number_seed(void);
+void packing(int id,int pizzas);
+void baking(int pizzas,int id);
 void preparation(int pizzas,int id);
 void* order(void* x);

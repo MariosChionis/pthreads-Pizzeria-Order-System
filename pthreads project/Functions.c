@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <pthread.h>
-#include "p3210218-p3210272-pizzeria.h"
+#include "GlobalaVariables.h"
 #include <stdlib.h>
+#include <unistd.h>
 #include <time.h>
 #include <stdbool.h>
 
@@ -31,6 +32,51 @@ unsigned int* random_number_seed(void) {
     return &random1;
 }
 
+//Order Packing stage
+void packing(int id,int pizzas){
+    
+    //Condition to ensure that thereis a packer to pack the order's pizzas
+    while(Npacker<1){
+        printf("Not enough packers..please wait \n");
+        pthread_cond_wait(&cond, &lock);
+    }
+    pthread_mutex_unlock(&lock);
+    Npacker--;
+    
+    for(int i=0;i<pizzas;i++){//For each pizza
+        sleep(Tpack);//Tpack=Packing time
+    }
+    pthread_mutex_lock(&lock);
+    
+    Npacker++;//Packing stage finished
+    
+    pthread_cond_signal(&cond);
+    pthread_mutex_unlock(&lock);
+    
+}
+
+//Baking stage
+void baking(int pizzas,int id){
+
+    //Condition to ensure that tehere are enough ovens to bake every pizza of an order at tha same time
+    while(Noven<pizzas){
+        printf("Not enough ovens..please wait \n");
+        pthread_cond_wait(&cond, &lock);
+    }
+    pthread_mutex_unlock(&lock);
+    Noven = Noven-pizzas;
+    printf("Baking started for order %d,diathesimoi fournoi %d\n",id,Noven);
+    sleep(Tbake);//Tbake=baking time
+    pthread_mutex_lock(&lock);
+
+    Noven = Noven+pizzas;//Baking stage finished for the order
+   
+    pthread_cond_signal(&cond);
+    pthread_mutex_unlock(&lock);
+    packing(id,pizzas);
+}
+
+//Preparation stage
 void preparation(int pizzas,int id){
 
     //Condition to ensure that there is a cook to start preparing the order
@@ -55,6 +101,7 @@ void preparation(int pizzas,int id){
     Ncook++;
     pthread_cond_signal(&cond);
     pthread_mutex_unlock(&lock);
+    baking(pizzas,id);
 
 }
 
