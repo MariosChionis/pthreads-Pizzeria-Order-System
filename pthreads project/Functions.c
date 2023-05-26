@@ -32,10 +32,35 @@ unsigned int* random_number_seed(void) {
     return &random1;
 }
 
+//Order Delivery Stage
+void delivery(int id){
+
+    //Condition to ensure that there is at least one delverer to deliver the order 
+    while(Ndeliverer<1){
+        printf("No delivery guy available\n");
+        pthread_cond_wait(&cond, &lock);
+    }
+    pthread_mutex_unlock(&lock);
+    Ndeliverer--;//Delivery started
+    printf("Delivering order %d \n",id);
+    unsigned int delivery_time=rand_r(random_number_seed())%Tdelhigh+Tdellow;
+    sleep(delivery_time*2);//It is doubled because it is delivery_time delivering the order and delivery_time returning to the store
+    pthread_mutex_lock(&lock);
+    
+    Ndeliverer++;//Delivery finished
+    
+    
+    pthread_cond_signal(&cond);
+    pthread_mutex_unlock(&lock);
+    
+    printf("Order with number %d delivered in %f minutes \n",id,convertSecondsToMinutes(z));
+
+}
+
 //Order Packing stage
 void packing(int id,int pizzas){
     
-    //Condition to ensure that thereis a packer to pack the order's pizzas
+    //Condition to ensure that there is a packer to pack the order's pizzas
     while(Npacker<1){
         printf("Not enough packers..please wait \n");
         pthread_cond_wait(&cond, &lock);
@@ -52,6 +77,8 @@ void packing(int id,int pizzas){
     
     pthread_cond_signal(&cond);
     pthread_mutex_unlock(&lock);
+
+    delivery(id);
     
 }
 
@@ -65,7 +92,7 @@ void baking(int pizzas,int id){
     }
     pthread_mutex_unlock(&lock);
     Noven = Noven-pizzas;
-    printf("Baking started for order %d,diathesimoi fournoi %d\n",id,Noven);
+    printf("Baking started for order %d,available ovens %d\n",id,Noven);
     sleep(Tbake);//Tbake=baking time
     pthread_mutex_lock(&lock);
 
@@ -73,6 +100,7 @@ void baking(int pizzas,int id){
    
     pthread_cond_signal(&cond);
     pthread_mutex_unlock(&lock);
+
     packing(id,pizzas);
 }
 
@@ -93,7 +121,7 @@ void preparation(int pizzas,int id){
     //Preparation for each pizza
     for(int i=0;i<pizzas;i++){
         sleep(Tprep);//Tprep*60 (because Tprep is in seconds)
-        printf("number %d pizza prepared for order %d \n",i+1,id);
+        printf("Number %d pizza prepared for order %d \n",i+1,id);
     }
     pthread_mutex_lock(&lock);
     
@@ -110,7 +138,7 @@ void* order(void* x) {
 
     pthread_mutex_lock(&lock);
     int id_thread = *(int*)x;
-    printf("H paraggelia %d xekinhse\n", id_thread);
+    printf("Order with number %d started\n", id_thread);
 
     //Finds the random number of pizzas by order
     int random_number_pizza = rand_r(random_number_seed()) % Norderhigh + Norderlow;

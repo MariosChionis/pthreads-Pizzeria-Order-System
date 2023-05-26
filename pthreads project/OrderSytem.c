@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <pthread.h>
-#include "p3210218-p3210272-pizzeria.h"
+#include "GlobalVariables.h"
 #include "Functions.h"
-#include<unistd.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <time.h>
 #include <stdbool.h>
@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
         //Freeing memory of each order that has been canceled
         if(cancel_id!=0){
             pthread_cancel(threads[cancel_id-1]);
-            printf("cancelled %d \n",cancel_id);
+            printf("Cancelled order %d \n",cancel_id);
             cancel_id=0;
             
         }
