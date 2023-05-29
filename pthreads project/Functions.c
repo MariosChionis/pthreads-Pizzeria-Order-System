@@ -37,7 +37,7 @@ void delivery(int id){
 
     //Condition to ensure that there is at least one delverer to deliver the order 
     while(Ndeliverer<1){
-        printf("No delivery guy available\n");
+        printf("No deliverer available\n");
         pthread_cond_wait(&cond, &lock);
     }
     pthread_mutex_unlock(&lock);
@@ -53,8 +53,31 @@ void delivery(int id){
     pthread_cond_signal(&cond);
     pthread_mutex_unlock(&lock);
     
-    printf("Order with number %d delivered in %f minutes \n",id,convertSecondsToMinutes(z));
+    //Terminating time counter for order time from submitting to delvering
+    clock_gettime(CLOCK_REALTIME, &finish_time2);
+    int z  = (finish_time2.tv_sec - start_time2.tv_sec) ;
 
+    
+    printf("Order with number %d delivered in %d minutes \n",id,z);
+
+    //Terminating time counter for order time from baking to delivering(cold time)
+    clock_gettime(CLOCK_REALTIME, &cold_time_finish);
+
+
+    order_time_sum=order_time_sum+z;
+
+    //Order with max total time until delivered
+    if(order_max_time<order_time_sum){
+        order_max_time=order_time_sum;
+    }
+
+    int z2=(cold_time_finish.tv_sec - cold_time_start.tv_sec) ;
+    cold_time_sum=cold_time_sum+z2;
+
+    //Order with max time from packing until delivered
+    if(cold_max_time<cold_time_sum){
+        cold_max_time=cold_time_sum;
+    }
 }
 
 //Order Packing stage
@@ -78,6 +101,13 @@ void packing(int id,int pizzas){
     pthread_cond_signal(&cond);
     pthread_mutex_unlock(&lock);
 
+    //Terimnating time counter for calculating time from submitting until packed
+    clock_gettime(CLOCK_REALTIME, &finish_time1);
+    int z  = (finish_time1.tv_sec - start_time1.tv_sec);
+
+    
+    printf("Order with number %d got ready in %d minutes \n",id,z);
+
     delivery(id);
     
 }
@@ -100,6 +130,9 @@ void baking(int pizzas,int id){
    
     pthread_cond_signal(&cond);
     pthread_mutex_unlock(&lock);
+
+    //Starting time counter for cold time
+    clock_gettime(CLOCK_REALTIME, &cold_time_start);
 
     packing(id,pizzas);
 }

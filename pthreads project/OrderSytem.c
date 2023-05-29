@@ -25,6 +25,10 @@ int main(int argc, char* argv[]) {
         id[i] = i + 1;//Order number 
         printf("Created thread number:  %d\n", i + 1);
 
+        //Starting the time counters
+        clock_gettime(CLOCK_REALTIME, &start_time1);
+        clock_gettime(CLOCK_REALTIME, &start_time2);
+
         resources = pthread_create(&threads[i], NULL, order, &id[i]);//Thread creation for each order 
 
         //Each thread is created in a period between [Torderlow,Toorderhigh]
@@ -45,6 +49,16 @@ int main(int argc, char* argv[]) {
         pthread_join(threads[i], NULL);
     }
 
+    //Print statements
+    printf("Total profit: %d euros\n",total_profit);
+    printf("Total plain pizzas sold: %d\n",sum_of_plainpizzas);
+    printf("Total special pizzas sold: %d\n",sum_of_specialpizzas);
+    printf("Successfull orders: %d\n",succesfull_orders);
+    printf("Unsuccessfull orders: %d\n",unsuccesfull_orders);
+    printf("Average customer service time:  %d \n",order_time_sum/succesfull_orders);
+    printf("Max customer service  time:  %d \n",order_max_time);
+    printf("Average cold time:  %d \n",cold_time_sum/succesfull_orders);
+    printf("Max cold time:  %d \n",cold_max_time);
 
     //Freing memory
     pthread_cancel(threads[Ncust]);

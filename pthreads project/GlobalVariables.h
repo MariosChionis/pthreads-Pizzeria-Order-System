@@ -36,3 +36,8 @@ void packing(int id,int pizzas);
 void baking(int pizzas,int id);
 void preparation(int pizzas,int id);
 void* order(void* x);
+struct timespec start_time1,start_time2,cold_time_start;//time variables for tracking preparation and cold time 
+struct timespec finish_time1,finish_time2,cold_time_finish;//time variables
+int cold_time_sum,order_time_sum;
+int order_max_time=-1;
+int cold_max_time=-1;
