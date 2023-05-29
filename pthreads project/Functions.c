@@ -67,16 +67,16 @@ void delivery(int id){
     order_time_sum=order_time_sum+z;
 
     //Order with max total time until delivered
-    if(order_max_time<order_time_sum){
-        order_max_time=order_time_sum;
+    if(order_max_time<z){
+        order_max_time=z;
     }
 
     int z2=(cold_time_finish.tv_sec - cold_time_start.tv_sec) ;
     cold_time_sum=cold_time_sum+z2;
 
     //Order with max time from packing until delivered
-    if(cold_max_time<cold_time_sum){
-        cold_max_time=cold_time_sum;
+    if(cold_max_time<z2){
+        cold_max_time=z2;
     }
 }
 
@@ -197,19 +197,19 @@ void* order(void* x) {
     
     //Checks if the order has failed or submitted based on the given possibility
     if(possibility_failed<=0.1){
-        printf("Order with number %d failed\n",id_nhma);
+        printf("Order with number %d failed\n",id_thread);
         unsuccesfull_orders++;
-        cancelation_id(id_nhma);
+        cancelation_id(id_thread);
         pthread_mutex_unlock(&lock);
     }else{
-        printf("Order with number %d submitted\n",id_nhma);
+        printf("Order with number %d submitted\n",id_thread);
         succesfull_orders++;
         sales(pizzas,random_number_pizza);
         
     }
 
     pthread_mutex_unlock(&lock);
-    preparation(random_number_pizza,id_nhma);
+    preparation(random_number_pizza,id_thread);
 
     return 0;
 }

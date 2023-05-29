@@ -10,6 +10,10 @@
 
 int main(int argc, char* argv[]) {
 
+    if (argc != 3) {
+        printf("Usage: %s Ncust - seed\n", argv[0]);
+        return 1;
+    }
     int resources;
     //Customers,random and thread funcs initialization
     Ncust = atoi(argv[1]);
@@ -55,10 +59,10 @@ int main(int argc, char* argv[]) {
     printf("Total special pizzas sold: %d\n",sum_of_specialpizzas);
     printf("Successfull orders: %d\n",succesfull_orders);
     printf("Unsuccessfull orders: %d\n",unsuccesfull_orders);
-    printf("Average customer service time:  %d \n",order_time_sum/succesfull_orders);
-    printf("Max customer service  time:  %d \n",order_max_time);
-    printf("Average cold time:  %d \n",cold_time_sum/succesfull_orders);
-    printf("Max cold time:  %d \n",cold_max_time);
+    printf("Average customer service time:  %d minutes\n",order_time_sum/succesfull_orders);
+    printf("Max customer service  time:  %d minutes\n",order_max_time);
+    printf("Average cold time:  %d minutes\n",cold_time_sum/succesfull_orders);
+    printf("Max cold time:  %d minutes \n",cold_max_time);
 
     //Freing memory
     pthread_cancel(threads[Ncust]);
